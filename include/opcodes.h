@@ -16,13 +16,32 @@
  * 
  */
 
-void run_stack_test();
-void run_opcodes_test();
+#ifndef OPCODES_H
+#define OPCODES_H
 
-int main()
-{
-  run_stack_test();
-  run_opcodes_test();
-  return 0;
-}
+#include <stdbool.h>
 
+typedef enum inst_t
+  {
+    NOP,
+    ADD,
+    SUB,
+    NEXT,
+    PREV,
+    CHECK,
+    IN,
+    OUT,
+    INIT,
+    DUMPSTAT
+  } inst_t;
+
+typedef struct opcode_list_t opcode_list_t;
+typedef void (*traveler) (inst_t instruction, int parameter, void* userData);
+
+opcode_list_t* opcode_list_new();
+void opcode_list_destroy(opcode_list_t* l);
+void opcode_list_add(opcode_list_t* l, inst_t instruction, int parameter);
+bool opcode_list_is_empty(opcode_list_t* l);
+void opcode_list_traverse(opcode_list_t* l, traveler func, void* userData);
+
+#endif
