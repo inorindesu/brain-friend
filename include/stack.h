@@ -16,6 +16,9 @@
  * 
  */
 
+#ifndef STACK_H
+#define STACK_H
+
 #include <stdbool.h>
 
 typedef struct stack_t stack_t;
@@ -25,3 +28,5 @@ void stack_destroy(stack_t* stack);
 void stack_push(stack_t* stack, int item);
 int stack_pop(stack_t* stack);
 bool stack_is_empty(stack_t* stack);
+
+#endif
