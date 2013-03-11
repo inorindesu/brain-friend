@@ -58,13 +58,7 @@ bool stack_is_empty(stack_t* stack)
 
 void stack_destroy(stack_t* stack)
 {
-  node_t** nodep = &stack->head;
-  while(*nodep)
-    {
-      node_t* f = *nodep;
-      *nodep = f->next;
-      free(f);
-    }
+  stack_clear(stack);
   free(stack);
 }
 
@@ -95,5 +89,16 @@ int stack_pop(stack_t* stack)
       *nodep = f->next;
       free(f);
       return r;
+    }
+}
+
+void stack_clear(stack_t* stack)
+{
+  node_t** nodep = &stack->head;
+  while(*nodep)
+    {
+      node_t* f = *nodep;
+      *nodep = f->next;
+      free(f);
     }
 }

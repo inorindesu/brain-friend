@@ -28,5 +28,6 @@ void stack_destroy(stack_t* stack);
 void stack_push(stack_t* stack, int item);
 int stack_pop(stack_t* stack);
 bool stack_is_empty(stack_t* stack);
+void stack_clear(stack_t* stack);
 
 #endif

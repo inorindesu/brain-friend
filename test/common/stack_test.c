@@ -97,6 +97,34 @@ static void test_stack_pop()
     }
 }
 
+void test_stack_clear()
+{
+  fprintf(stderr, "[stack] clear...");
+  stack_t* s = stack_new();
+  for(int i = 0; i < POP_TEST_SIZE; i++)
+    {
+      stack_push(s, i);
+    }
+  bool isEmpty = stack_is_empty(s);
+  if (isEmpty == true)
+    {
+      fprintf(stderr, "failed! (1)\n");
+      stack_destroy(s);
+      return;
+    }
+  stack_clear(s);
+  isEmpty = stack_is_empty(s);
+  stack_destroy(s);
+  if (isEmpty)
+    {
+      fprintf(stderr, "done!\n");
+    }
+  else
+    {
+      fprintf(stderr, "failed! (2)\n");
+    }
+}
+
 void run_stack_test()
 {
   fprintf(stderr, "[stack] stack test started\n");
@@ -104,5 +132,6 @@ void run_stack_test()
   test_stack_life2();
   test_stack_is_empty1();
   test_stack_pop();
+  test_stack_clear();
   fprintf(stderr, "[stack] stack test ended\n");
 }
