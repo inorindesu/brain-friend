@@ -121,6 +121,34 @@ static void opcode_list_traverse2()
     }
 }
 
+void opcode_list_clear_test()
+{
+  fprintf(stderr, "[opcodes] clear...");
+  opcode_list_t* l = opcode_list_new();
+  for(int i = 0; i < TEST_DATA_SIZE; i++)
+    {
+      opcode_list_add(l, testInst[i], testParam[i]);
+    }
+  bool isEmpty = opcode_list_is_empty(l);
+  if (isEmpty)
+    {
+      opcode_list_destroy(l);
+      fprintf(stderr, "failed! (1)\n");
+      return;
+    }
+  opcode_list_clear(l);
+  isEmpty = opcode_list_is_empty(l);
+  opcode_list_destroy(l);
+  if (isEmpty)
+    {
+      fprintf(stderr, "done!\n");
+    }
+  else
+    {
+      fprintf(stderr, "failed! (2)\n");
+    }
+}
+
 void run_opcodes_test()
 {
   fprintf(stderr, "[opcodes] opcodes test started\n");
@@ -128,5 +156,6 @@ void run_opcodes_test()
   opcode_list_life2();
   opcode_list_traverse1();
   opcode_list_traverse2();
+  opcode_list_clear_test();
   fprintf(stderr, "[opcodes] opcodes test ended\n");
 }

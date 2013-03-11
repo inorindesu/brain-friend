@@ -43,5 +43,6 @@ void opcode_list_destroy(opcode_list_t* l);
 void opcode_list_add(opcode_list_t* l, inst_t instruction, int parameter);
 bool opcode_list_is_empty(opcode_list_t* l);
 void opcode_list_traverse(opcode_list_t* l, traveler func, void* userData);
+void opcode_list_clear(opcode_list_t* l);
 
 #endif

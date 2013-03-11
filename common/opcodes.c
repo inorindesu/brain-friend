@@ -42,13 +42,7 @@ opcode_list_t* opcode_list_new()
 
 void opcode_list_destroy(opcode_list_t* l)
 {
-  opcode_t** o = &l->head;
-  while(*o)
-    {
-      opcode_t* on = (*o)->next;
-      free(*o);
-      *o = on;
-    }
+  opcode_list_clear(l);
   free(l);
 }
 
@@ -84,4 +78,16 @@ void opcode_list_traverse(opcode_list_t* l, traveler func, void* userData)
       func(oi->instruction, oi->param, userData);
       *o = oi->next;
     }
+}
+
+void opcode_list_clear(opcode_list_t* l)
+{
+  opcode_t** o = &l->head;
+  while(*o)
+    {
+      opcode_t* on = (*o)->next;
+      free(*o);
+      *o = on;
+    }
+  l->tail = NULL;
 }
