@@ -17,6 +17,7 @@
  */
 
 #include <stack.h>
+#include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
 
@@ -38,8 +39,8 @@ static void test_stack_life2()
 {
   fprintf(stderr, "[stack] life2..");
   stack_t* stack = stack_new();
-  stack_push(stack, 33);
-  stack_push(stack, 34);
+  stack_push(stack, (void*)33);
+  stack_push(stack, (void*)34);
   stack_destroy(stack);
   fprintf(stderr, "done!\n");
 }
@@ -66,15 +67,15 @@ static void test_stack_pop()
 {
   fprintf(stderr, "[stack] popping..");
   stack_t* stack = stack_new();
-  for(int i = 0; i < POP_TEST_SIZE; i++)
+  for(long long i = 0; i < POP_TEST_SIZE; i++)
     {
-      stack_push(stack, i);
+      stack_push(stack, (void*)i);
     }
   int failNum = -1;
-  int popResult = 0;
+  long long popResult = 0;
   for(int i = POP_TEST_SIZE - 1; i >= 0; i--)
     {
-      popResult = stack_pop(stack);
+      popResult = (long long)stack_pop(stack);
       if(popResult != i)
         {
           failNum = i;
@@ -101,9 +102,9 @@ void test_stack_clear()
 {
   fprintf(stderr, "[stack] clear...");
   stack_t* s = stack_new();
-  for(int i = 0; i < POP_TEST_SIZE; i++)
+  for(long long i = 0; i < POP_TEST_SIZE; i++)
     {
-      stack_push(s, i);
+      stack_push(s, (void*)i);
     }
   bool isEmpty = stack_is_empty(s);
   if (isEmpty == true)
@@ -125,6 +126,35 @@ void test_stack_clear()
     }
 }
 
+void test_stack_clear_full()
+{
+  fprintf(stderr, "[stack] clear (full)...");
+  stack_t* s = stack_new();
+  for(long long i = 0; i < POP_TEST_SIZE; i++)
+    {
+      int* space = malloc(sizeof(int));
+      stack_push(s, space);
+    }
+  bool isEmpty = stack_is_empty(s);
+  if (isEmpty == true)
+    {
+      fprintf(stderr, "failed! (1)\n");
+      stack_destroy(s);
+      return;
+    }
+  stack_clear_full(s);
+  isEmpty = stack_is_empty(s);
+  stack_destroy_full(s);
+  if (isEmpty)
+    {
+      fprintf(stderr, "done!\n");
+    }
+  else
+    {
+      fprintf(stderr, "failed! (2)\n");
+    }
+}
+
 void run_stack_test()
 {
   fprintf(stderr, "[stack] stack test started\n");
@@ -133,5 +163,6 @@ void run_stack_test()
   test_stack_is_empty1();
   test_stack_pop();
   test_stack_clear();
+  test_stack_clear_full();
   fprintf(stderr, "[stack] stack test ended\n");
 }

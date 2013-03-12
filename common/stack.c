@@ -26,7 +26,7 @@
 typedef struct node_t
 {
   struct node_t* next;
-  int data;
+  void* data;
 }node_t;
 
 /*
@@ -62,7 +62,7 @@ void stack_destroy(stack_t* stack)
   free(stack);
 }
 
-void stack_push(stack_t* stack, int item)
+void stack_push(stack_t* stack, void* item)
 {
   node_t** nodep = &stack->head;
   if(*nodep)
@@ -75,21 +75,23 @@ void stack_push(stack_t* stack, int item)
   else
     {
       *nodep = malloc(sizeof(node_t));
+      (*nodep)->data = item;
       (*nodep)->next = NULL;
     }
 }
 
-int stack_pop(stack_t* stack)
+void* stack_pop(stack_t* stack)
 {
   node_t** nodep = &stack->head;
   if(*nodep)
     {
-      int r = (*nodep)->data;
+      void* r = (*nodep)->data;
       node_t* f = *nodep;
       *nodep = f->next;
       free(f);
       return r;
     }
+  return NULL;
 }
 
 void stack_clear(stack_t* stack)
@@ -100,5 +102,35 @@ void stack_clear(stack_t* stack)
       node_t* f = *nodep;
       *nodep = f->next;
       free(f);
+    }
+}
+
+void stack_clear_full(stack_t* stack)
+{
+  node_t** nodep = &stack->head;
+  while(*nodep)
+    {
+      node_t* f = *nodep;
+      *nodep = f->next;
+      free(f->data);
+      free(f);
+    }
+}
+
+void stack_destroy_full(stack_t* stack)
+{
+  stack_clear_full(stack);
+  free(stack);
+}
+
+void* stack_peek(stack_t* stack)
+{
+  if (stack->head == NULL)
+    {
+      return NULL;
+    }
+  else
+    {
+      return stack->head->data;
     }
 }
