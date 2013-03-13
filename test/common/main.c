@@ -18,11 +18,13 @@
 
 void run_stack_test();
 void run_opcodes_test();
+void run_opcode_compiler_test();
 
 int main()
 {
   run_stack_test();
   run_opcodes_test();
+  run_opcode_compiler_test();
   return 0;
 }
 
