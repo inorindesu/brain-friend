@@ -33,5 +33,6 @@ opcode_list_t* opcode_compiler_result_new(opcode_compiler_t* c);
 int opcode_compiler_get_current_column_number(opcode_compiler_t* c);
 int opcode_compiler_get_current_line_number(opcode_compiler_t* c);
 char* opcode_compiler_get_error_new(opcode_compiler_t* c);
+void opcode_compiler_set_optimization(opcode_compiler_t* c, bool optimize);
 
 #endif

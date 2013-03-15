@@ -29,13 +29,16 @@ void OC_life()
   fprintf(stderr, "done!\n");
 }
 
-int dataSize = 5;
+int dataSize = 8;
 char* datasets[] = {
   "+",
   "-",
   "+-><,.",
   "+[]+",
-  "-[-+><]-"
+  "-[-+><]-",
+  "[-[+]]",
+  "+++++",
+  "[+++]-"
 };
 
 char* results[] = {
@@ -43,7 +46,21 @@ char* results[] = {
   "INIT 32767\nSUB 1\n",
   "INIT 32767\nADD 1\nSUB 1\nNEXT 1\nPREV 1\nIN\nOUT\n",
   "INIT 32767\nADD 1\nBZ 1\nADD 1\n",
-  "INIT 32767\nSUB 1\nBZ 5\nSUB 1\nADD 1\nNEXT 1\nPREV 1\nSUB 1\n"
+  "INIT 32767\nSUB 1\nBZ 5\nSUB 1\nADD 1\nNEXT 1\nPREV 1\nSUB 1\n",
+  "INIT 32767\nBZ 4\nSUB 1\nBZ 2\nADD 1\n",
+  "INIT 32767\nADD 1\nADD 1\nADD 1\nADD 1\nADD 1\n",
+  "INIT 32767\nBZ 4\nADD 1\nADD 1\nADD 1\nSUB 1\n"
+};
+
+char* results_opt[] = {
+  "INIT 32767\nADD 1\n",
+  "INIT 32767\nSUB 1\n",
+  "INIT 32767\nADD 1\nSUB 1\nNEXT 1\nPREV 1\nIN\nOUT\n",
+  "INIT 32767\nADD 1\nBZ 1\nADD 1\n",
+  "INIT 32767\nSUB 1\nBZ 5\nSUB 1\nADD 1\nNEXT 1\nPREV 1\nSUB 1\n",
+  "INIT 32767\nBZ 4\nSUB 1\nBZ 2\nADD 1\n",
+  "INIT 32767\nADD 5\n",
+  "INIT 32767\nBZ 2\nADD 3\nSUB 1\n"
 };
 
 int catBufSize = 8192;
@@ -122,6 +139,29 @@ void OC_compile(int datasetId)
   free(buf);
 }
 
+void OC_optimize(int datasetId)
+{
+  fprintf(stderr, "[OC] optimize %d ...", datasetId);
+  opcode_compiler_t* oc = opcode_compiler_new();
+  opcode_compiler_set_optimization(oc, true);
+  opcode_compiler_feed_code(oc, datasets[datasetId], strlen(datasets[datasetId]));
+  opcode_compiler_done_compilation(oc);
+  opcode_list_t* compiledResult = opcode_compiler_result_new(oc);
+  char* buf = opcodes_to_string(compiledResult);
+  int cmpResult = strncmp(buf, results_opt[datasetId], strlen(results_opt[datasetId]));
+  opcode_list_destroy(compiledResult);
+  opcode_compiler_destroy(oc);
+  if (cmpResult == 0)
+    {
+      fprintf(stderr, "done!\n");
+    }
+  else
+    {
+      fprintf(stderr, "failed! (result = %d,\n compiled: %s\n expected: %s)\n", cmpResult, buf, results_opt[datasetId]);
+    }
+  free(buf);
+}
+
 void run_opcode_compiler_test()
 {
   fprintf(stderr, "[OC] OC test started\n");
@@ -129,6 +169,7 @@ void run_opcode_compiler_test()
   for(int i = 0; i < dataSize; i++)
     {
       OC_compile(i);
+      OC_optimize(i);
     }
   fprintf(stderr, "[OC] OC test ended\n");
 }

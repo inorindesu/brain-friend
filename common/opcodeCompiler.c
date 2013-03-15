@@ -29,8 +29,11 @@ typedef struct opcode_compiler_t
   bool compilationDone;
   bool compilationStarted;
   bool insertStateDumper;
+  bool optimize;
   int lineNo;
   int columnNo;
+  inst_t lastInst;
+  int param;
   char* errorMsg;
 }opcode_compiler_t;
 
@@ -41,6 +44,9 @@ opcode_compiler_t* opcode_compiler_new()
   c->compilationDone = false;
   c->compilationStarted = false;
   c->insertStateDumper = false;
+  c->optimize = false;
+  c->lastInst = NOP;
+  c->param = 0;
   c->lineNo = 0;
   c->columnNo = 0;
   c->errorMsg = NULL;
@@ -49,6 +55,10 @@ opcode_compiler_t* opcode_compiler_new()
 
 void opcode_compiler_set_insert_state_dumper(opcode_compiler_t* c, bool insertStateDumper)
 {
+  if (insertStateDumper)
+    {
+      opcode_compiler_set_optimization(c, false);
+    }
   c->insertStateDumper = insertStateDumper;
 }
 
@@ -123,10 +133,28 @@ void opcode_compiler_feed_code(opcode_compiler_t* c, const char* code, unsigned 
               c->columnNo = 0;
               continue;
             case '[':
+              if (c->optimize && c->insertStateDumper == false)
+                {
+                  if (c->lastInst != NOP)
+                    {
+                      opcode_list_add(stack_peek(c->loop), c->lastInst, c->param);
+                    }
+                  c->lastInst = NOP;
+                  c->param = 0;
+                }
               stack_push(c->loop, opcode_list_new());
               break;
             case ']':
               olEnd = stack_pop(c->loop);
+              if (c->optimize && c->insertStateDumper == false)
+                {
+                  if(c->lastInst != NOP)
+                    {
+                      opcode_list_add(olEnd, c->lastInst, c->param);
+                    }
+                  c->lastInst = NOP;
+                  c->param = 0;
+                }
               if (stack_is_empty(c->loop))
                 {
                   c->errorMsg = "Unpaired ] found";
@@ -147,33 +175,124 @@ void opcode_compiler_feed_code(opcode_compiler_t* c, const char* code, unsigned 
                 {
                   opcode_list_add(stack_peek(c->loop), DUMPSTAT, 0);
                 }
-              opcode_list_add(stack_peek(c->loop), NEXT, 1);
+              
+              if(c->optimize == false || c->insertStateDumper)
+                {
+                  opcode_list_add(stack_peek(c->loop), NEXT, 1);
+                }
+              else
+                {
+                  if(c->lastInst == NEXT)
+                    {
+                      c->param += 1;
+                    }
+                  else
+                    {
+                      if (c->lastInst != NOP)
+                        {
+                          opcode_list_add(stack_peek(c->loop), c->lastInst, c->param);
+                        }
+                      c->lastInst = NEXT;
+                      c->param = 1;
+                    }
+                }
               break;
             case '<':
               if (c->insertStateDumper)
                 {
                   opcode_list_add(stack_peek(c->loop), DUMPSTAT, 0);
                 }
-              opcode_list_add(stack_peek(c->loop), PREV, 1);
+              //opcode_list_add(stack_peek(c->loop), PREV, 1);
+              if(c->optimize == false || c->insertStateDumper)
+                {
+                  opcode_list_add(stack_peek(c->loop), PREV, 1);
+                }
+              else
+                {
+                  if(c->lastInst == PREV)
+                    {
+                      c->param += 1;
+                    }
+                  else
+                    {
+                      if (c->lastInst != NOP)
+                        {
+                          opcode_list_add(stack_peek(c->loop), c->lastInst, c->param);
+                        }
+                      c->lastInst = PREV;
+                      c->param = 1;
+                    }
+                }
+
               break;
             case '+':
               if (c->insertStateDumper)
                 {
                   opcode_list_add(stack_peek(c->loop), DUMPSTAT, 0);
                 }
-              opcode_list_add(stack_peek(c->loop), ADD, 1);
+              //opcode_list_add(stack_peek(c->loop), ADD, 1);
+              if(c->optimize == false || c->insertStateDumper)
+                {
+                  opcode_list_add(stack_peek(c->loop), ADD, 1);
+                }
+              else
+                {
+                  if(c->lastInst == ADD)
+                    {
+                      c->param += 1;
+                    }
+                  else
+                    {
+                      if (c->lastInst != NOP)
+                        {
+                          opcode_list_add(stack_peek(c->loop), c->lastInst, c->param);
+                        }
+                      c->lastInst = ADD;
+                      c->param = 1;
+                    }
+                }
+
               break;
             case '-':
               if (c->insertStateDumper)
                 {
                   opcode_list_add(stack_peek(c->loop), DUMPSTAT, 0);
                 }
-              opcode_list_add(stack_peek(c->loop), SUB, 1);
+              //opcode_list_add(stack_peek(c->loop), SUB, 1);
+              if(c->optimize == false || c->insertStateDumper)
+                {
+                  opcode_list_add(stack_peek(c->loop), SUB, 1);
+                }
+              else
+                {
+                  if(c->lastInst == SUB)
+                    {
+                      c->param += 1;
+                    }
+                  else
+                    {
+                      if (c->lastInst != NOP)
+                        {
+                          opcode_list_add(stack_peek(c->loop), c->lastInst, c->param);
+                        }
+                      c->lastInst = SUB;
+                      c->param = 1;
+                    }
+                }
               break;
             case '.':
               if (c->insertStateDumper)
                 {
                   opcode_list_add(stack_peek(c->loop), DUMPSTAT, 0);
+                }
+              if (c->optimize)
+                {
+                  if(c->lastInst != NOP)
+                    {
+                      opcode_list_add(stack_peek(c->loop), c->lastInst, c->param);
+                    }
+                  c->lastInst = NOP;
+                  c->param = 0;
                 }
               opcode_list_add(stack_peek(c->loop), OUT, 0);
               break;
@@ -181,6 +300,15 @@ void opcode_compiler_feed_code(opcode_compiler_t* c, const char* code, unsigned 
               if (c->insertStateDumper)
                 {
                   opcode_list_add(stack_peek(c->loop), DUMPSTAT, 0);
+                }
+              if (c->optimize)
+                {
+                  if (c->lastInst != NOP)
+                    {
+                      opcode_list_add(stack_peek(c->loop), c->lastInst, c->param);
+                    }
+                  c->lastInst = NOP;
+                  c->param = 0;
                 }
               opcode_list_add(stack_peek(c->loop), IN, 0);
               break;
@@ -194,9 +322,14 @@ void opcode_compiler_feed_code(opcode_compiler_t* c, const char* code, unsigned 
 
 void opcode_compiler_done_compilation(opcode_compiler_t* c)
 {
+  if (c->optimize)
+    {
+      opcode_list_add(stack_peek(c->loop), c->lastInst, c->param);
+    }
+  
   if (c->insertStateDumper)
     {
-      opcode_list_add(stack_pop(c->loop), DUMPSTAT, 0);
+      opcode_list_add(stack_peek(c->loop), DUMPSTAT, 0);
     }
 
   opcode_list_t* ol = stack_pop(c->loop);
@@ -241,5 +374,24 @@ char* opcode_compiler_get_error_new(opcode_compiler_t* c)
   else
     {
       return NULL;
+    }
+}
+
+void opcode_compiler_set_optimization(opcode_compiler_t* c, bool optimize)
+{
+  if(c->optimize != optimize)
+    {
+      if (c->optimize == true)
+        {
+          /* flush last optimization result */
+          opcode_list_add(stack_pop(c->loop), c->lastInst, c->param);
+          c->lastInst = NOP;
+          c->param = 0;
+        }
+      c->optimize = optimize;
+      if (c->optimize == true && c->insertStateDumper == true)
+        {
+          c->insertStateDumper = false;
+        }
     }
 }
