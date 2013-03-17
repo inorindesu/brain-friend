@@ -28,6 +28,6 @@ set(COMMON_TEST
 include_directories(include)
 list(APPEND CMAKE_C_FLAGS ${C99_FLAG})
 
-#add_executable(bfi ${COMMON_SRC} ${INTER_SRC})
+add_executable(bfi ${COMMON_SRC} ${INTER_SRC})
 #add_executable(bfc ${COMMON_SRC} ${COMPILER_SRC})
 add_executable(test_common ${COMMON_SRC} ${COMMON_TEST})
