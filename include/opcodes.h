@@ -29,6 +29,7 @@ typedef enum inst_t
     NEXT,
     PREV,
     BZ,
+    B,
     IN,
     OUT,
     INIT,

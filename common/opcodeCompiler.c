@@ -164,7 +164,14 @@ void opcode_compiler_feed_code(opcode_compiler_t* c, const char* code, unsigned 
               opcode_list_traverse(olEnd, opcode_counter, &opcodeCount);
               if (c->insertStateDumper)
                 {
-                  opcode_list_add(stack_peek(c->loop), DUMPSTAT, 0);
+                  opcode_list_add(olEnd, DUMPSTAT, 0);
+                  opcodeCount += 1;
+                }
+              opcode_list_add(olEnd, B, (opcodeCount + 1) * (-1));
+              opcodeCount += 1;
+              if (c->insertStateDumper)
+                {
+                  opcode_list_add(olUpperLevel, DUMPSTAT, 0);
                 }
               opcode_list_add(olUpperLevel, BZ, opcodeCount + 1);
               opcode_list_traverse(olEnd, opcode_copy, olUpperLevel);
