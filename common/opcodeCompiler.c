@@ -384,7 +384,10 @@ void opcode_compiler_set_optimization(opcode_compiler_t* c, bool optimize)
       if (c->optimize == true)
         {
           /* flush last optimization result */
-          opcode_list_add(stack_pop(c->loop), c->lastInst, c->param);
+          if (stack_is_empty(c->loop) == false)
+            {
+              opcode_list_add(stack_pop(c->loop), c->lastInst, c->param);
+            }
           c->lastInst = NOP;
           c->param = 0;
         }
@@ -394,4 +397,14 @@ void opcode_compiler_set_optimization(opcode_compiler_t* c, bool optimize)
           c->insertStateDumper = false;
         }
     }
+}
+
+bool opcode_compiler_get_optimization(opcode_compiler_t* c)
+{
+  return c->optimize;
+}
+
+bool opcode_compiler_get_insert_state_dumper(opcode_compiler_t* c)
+{
+  return c->insertStateDumper;
 }

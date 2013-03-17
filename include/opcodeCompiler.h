@@ -34,5 +34,7 @@ int opcode_compiler_get_current_column_number(opcode_compiler_t* c);
 int opcode_compiler_get_current_line_number(opcode_compiler_t* c);
 char* opcode_compiler_get_error_new(opcode_compiler_t* c);
 void opcode_compiler_set_optimization(opcode_compiler_t* c, bool optimize);
+bool opcode_compiler_get_optimization(opcode_compiler_t* c);
+bool opcode_compiler_get_insert_state_dumper(opcode_compiler_t* c);
 
 #endif

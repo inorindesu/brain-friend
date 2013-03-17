@@ -63,6 +63,17 @@ char* results_opt[] = {
   "INIT 32767\nBZ 2\nADD 3\nSUB 1\n"
 };
 
+char* results_dump[] = {
+  "INIT 32767\nDUMPSTAT\nADD 1\nDUMPSTAT\n",
+  "INIT 32767\nDUMPSTAT\nSUB 1\nDUMPSTAT\n",
+  "INIT 32767\nDUMPSTAT\nADD 1\nDUMPSTAT\nSUB 1\nDUMPSTAT\nNEXT 1\nDUMPSTAT\nPREV 1\nDUMPSTAT\nIN\nDUMPSTAT\nOUT\nDUMPSTAT\n",
+  "INIT 32767\nDUMPSTAT\nADD 1\nDUMPSTAT\nBZ 2\nDUMPSTAT\nADD 1\nDUMPSTAT\n",
+  "INIT 32767\nDUMPSTAT\nSUB 1\nDUMPSTAT\nBZ 9\nDUMPSTAT\nSUB 1\nDUMPSTAT\nADD 1\nDUMPSTAT\nNEXT 1\nDUMPSTAT\nPREV 1\nDUMPSTAT\nSUB 1\nDUMPSTAT\n",
+  "INIT 32767\nDUMPSTAT\nBZ 7\nDUMPSTAT\nSUB 1\nDUMPSTAT\nBZ 3\nDUMPSTAT\nADD 1\nDUMPSTAT\n",
+  "INIT 32767\nDUMPSTAT\nADD 1\nDUMPSTAT\nADD 1\nDUMPSTAT\nADD 1\nDUMPSTAT\nADD 1\nDUMPSTAT\nADD 1\nDUMPSTAT\n",
+  "INIT 32767\nDUMPSTAT\nBZ 7\nDUMPSTAT\nADD 1\nDUMPSTAT\nADD 1\nDUMPSTAT\nADD 1\nDUMPSTAT\nSUB 1\nDUMPSTAT\n"
+};
+
 int catBufSize = 8192;
 
 static void op_to_str(inst_t instruction, int param, void* buf)
@@ -162,14 +173,84 @@ void OC_optimize(int datasetId)
   free(buf);
 }
 
+void OC_switch()
+{
+  opcode_compiler_t* oc = opcode_compiler_new();
+  if(opcode_compiler_get_optimization(oc) != false ||
+     opcode_compiler_get_insert_state_dumper(oc) != false)
+    {
+      fprintf(stderr, "failed! (default not correct)\n");
+      opcode_compiler_destroy(oc);
+      return;
+    }
+  
+  opcode_compiler_set_insert_state_dumper(oc, true);
+  if(opcode_compiler_get_insert_state_dumper(oc) != true)
+    {
+      fprintf(stderr, "failed! (cannot set insert_state_dumper)\n");
+      opcode_compiler_destroy(oc);
+      return;
+    }
+  
+  opcode_compiler_set_optimization(oc, true);
+  if(opcode_compiler_get_optimization(oc) != true)
+    {
+      fprintf(stderr, "failed! (cannot set optimization)\n");
+      opcode_compiler_destroy(oc);
+      return;
+    }
+  else if(opcode_compiler_get_insert_state_dumper(oc) != false)
+    {
+      fprintf(stderr, "failed! (insert_state_dumper was not overridden by optimization = true)\n");
+      opcode_compiler_destroy(oc);
+      return;
+    }  
+
+  opcode_compiler_set_insert_state_dumper(oc, true);
+  if(opcode_compiler_get_optimization(oc) != false)
+    {
+      fprintf(stderr, "failed! (optimization was not overridden by insert_state_dumper = true)\n");
+      opcode_compiler_destroy(oc);
+      return;
+    }
+  
+  opcode_compiler_destroy(oc);
+  fprintf(stderr, "done!\n");
+}
+
+void OC_dump(int datasetId)
+{
+  fprintf(stderr, "[OC] dumpstat %d ...", datasetId);
+  opcode_compiler_t* oc = opcode_compiler_new();
+  opcode_compiler_set_insert_state_dumper(oc, true);
+  opcode_compiler_feed_code(oc, datasets[datasetId], strlen(datasets[datasetId]));
+  opcode_compiler_done_compilation(oc);
+  opcode_list_t* compiledResult = opcode_compiler_result_new(oc);
+  char* buf = opcodes_to_string(compiledResult);
+  int cmpResult = strncmp(buf, results_dump[datasetId], strlen(results_dump[datasetId]));
+  opcode_list_destroy(compiledResult);
+  opcode_compiler_destroy(oc);
+  if (cmpResult == 0)
+    {
+      fprintf(stderr, "done!\n");
+    }
+  else
+    {
+      fprintf(stderr, "failed! (result = %d,\n compiled: %s\n expected: %s)\n", cmpResult, buf, results_dump[datasetId]);
+    }
+  free(buf);
+}
+
 void run_opcode_compiler_test()
 {
   fprintf(stderr, "[OC] OC test started\n");
   OC_life();
+  OC_switch();
   for(int i = 0; i < dataSize; i++)
     {
       OC_compile(i);
       OC_optimize(i);
+      OC_dump(i);
     }
   fprintf(stderr, "[OC] OC test ended\n");
 }
