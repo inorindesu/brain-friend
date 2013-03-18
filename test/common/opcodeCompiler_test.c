@@ -180,6 +180,7 @@ void OC_optimize(int datasetId)
 void OC_switch()
 {
   opcode_compiler_t* oc = opcode_compiler_new();
+  fprintf(stderr, "[OC] Switch..");
   if(opcode_compiler_get_optimization(oc) != false ||
      opcode_compiler_get_insert_state_dumper(oc) != false)
     {
