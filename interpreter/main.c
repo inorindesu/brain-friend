@@ -189,6 +189,7 @@ int main(int argc, char** argv)
               if (state->dataIdx < 0 || state->dataIdx >= state->dataSize)
                 {
                   fprintf(stderr, "[INTERPRETER] ERROR: trying to read illegal data position %d\n", state->dataIdx);
+                  return -1;
                 }
               else
                 {
@@ -218,6 +219,7 @@ int main(int argc, char** argv)
               if (state->dataIdx < 0 || state->dataIdx >= state->dataSize)
                 {
                   fprintf(stderr, "[INTERPRETER] ERROR: trying to write to illegal data position %d\n", state->dataIdx);
+                  return -1;
                 }
               else
                 {
@@ -237,6 +239,7 @@ int main(int argc, char** argv)
               if (state->dataIdx < 0 || state->dataIdx >= state->dataSize)
                 {
                   fprintf(stderr, "[INTERPRETER] ERROR: trying to write to illegal data position %d\n", state->dataIdx);
+                  return -1;
                 }
               else
                 {
@@ -248,6 +251,7 @@ int main(int argc, char** argv)
               if (state->dataIdx < 0 || state->dataIdx >= state->dataSize)
                 {
                   fprintf(stderr, "[INTERPRETER] ERROR: trying to read illegal data position %d\n", state->dataIdx);
+                  return -1;
                 }
               else
                 {
