@@ -79,7 +79,21 @@ int main(int argc, char** argv)
         {
           optimize = true;
         }
+      else if(strcmp(argv[i], "-h") == 0 || strcmp(argv[i], "--help") == 0)
+        {
+          fprintf(stdout, "Usage: %s [-d|-o] [-h]\n\n", argv[0]);
+          fprintf(stdout, "-d     Dump data near current data point after each instruction.\n");
+          fprintf(stdout, "-o     Do optimization\n");
+          fprintf(stdout, "       (Beware that -d and -o are incompatible switches)\n\n");
+          fprintf(stdout, "-h     Show this help message\n");
+          return 0;
+        }
+      else
+        {
+          fprintf(stderr, "[INTERPRETER] Warning: ignoring unknown switch '%s'.\n", argv[i]);
+        }
     }
+
   if (debug && optimize)
     {
       fprintf(stderr, "[INTERPRETER] Warning: ignoring optimization flag.");
@@ -174,7 +188,7 @@ int main(int argc, char** argv)
             case BZ:
               if (state->dataIdx < 0 || state->dataIdx >= state->dataSize)
                 {
-                  fprintf(stderr, "ERROR: trying to read illegal data position %d\n", state->dataIdx);
+                  fprintf(stderr, "[INTERPRETER] ERROR: trying to read illegal data position %d\n", state->dataIdx);
                 }
               else
                 {
@@ -191,7 +205,8 @@ int main(int argc, char** argv)
             case ADD:
               if (state->dataIdx < 0 || state->dataIdx >= state->dataSize)
                 {
-                  fprintf(stderr, "ERROR: trying to write to illegal data position %d\n", state->dataIdx);
+                  fprintf(stderr, "[INTERPRETER] ERROR: trying to write to illegal data position %d\n", state->dataIdx);
+                  return -1;
                 }
               else
                 {
@@ -202,7 +217,7 @@ int main(int argc, char** argv)
             case SUB:
               if (state->dataIdx < 0 || state->dataIdx >= state->dataSize)
                 {
-                  fprintf(stderr, "ERROR: trying to write to illegal data position %d\n", state->dataIdx);
+                  fprintf(stderr, "[INTERPRETER] ERROR: trying to write to illegal data position %d\n", state->dataIdx);
                 }
               else
                 {
@@ -221,7 +236,7 @@ int main(int argc, char** argv)
             case IN:
               if (state->dataIdx < 0 || state->dataIdx >= state->dataSize)
                 {
-                  fprintf(stderr, "ERROR: trying to write to illegal data position %d\n", state->dataIdx);
+                  fprintf(stderr, "[INTERPRETER] ERROR: trying to write to illegal data position %d\n", state->dataIdx);
                 }
               else
                 {
@@ -232,7 +247,7 @@ int main(int argc, char** argv)
             case OUT:
               if (state->dataIdx < 0 || state->dataIdx >= state->dataSize)
                 {
-                  fprintf(stderr, "ERROR: trying to read illegal data position %d\n", state->dataIdx);
+                  fprintf(stderr, "[INTERPRETER] ERROR: trying to read illegal data position %d\n", state->dataIdx);
                 }
               else
                 {
@@ -286,7 +301,7 @@ int main(int argc, char** argv)
                 }
               break;
             default:
-              fprintf(stderr, "[INTERPRETER] Warning: unkonwn instruction.");
+              fprintf(stderr, "[INTERPRETER] Warning: ignoring unkonwn instruction.");
               instructionBuffer->currIndex += 1;
               break;
             }
