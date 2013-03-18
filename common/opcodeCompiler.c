@@ -30,8 +30,11 @@ typedef struct opcode_compiler_t
   bool compilationStarted;
   bool insertStateDumper;
   bool optimize;
+  int dataSlotCount;
+  /* for lineNo:columnNo information*/
   int lineNo;
   int columnNo;
+  /* for optimization */
   inst_t lastInst;
   int param;
   char* errorMsg;
@@ -50,6 +53,7 @@ opcode_compiler_t* opcode_compiler_new()
   c->lineNo = 0;
   c->columnNo = 0;
   c->errorMsg = NULL;
+  c->dataSlotCount = 32767;
   return c;
 }
 
@@ -110,7 +114,7 @@ void opcode_compiler_feed_code(opcode_compiler_t* c, const char* code, unsigned 
       /* insert command for initialize execution environment */
       c->compilationStarted = true;
       opcode_list_t* ol = opcode_list_new();
-      opcode_list_add(ol, INIT, 32767);
+      opcode_list_add(ol, INIT, c->dataSlotCount);
       stack_push(c->loop, ol);
     }
   
