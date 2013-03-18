@@ -30,7 +30,7 @@ typedef struct opcode_compiler_t
   bool compilationStarted;
   bool insertStateDumper;
   bool optimize;
-  int dataSlotCount;
+  unsigned int dataSlotCount;
   /* for lineNo:columnNo information*/
   int lineNo;
   int columnNo;
@@ -418,4 +418,18 @@ bool opcode_compiler_get_optimization(opcode_compiler_t* c)
 bool opcode_compiler_get_insert_state_dumper(opcode_compiler_t* c)
 {
   return c->insertStateDumper;
+}
+
+void opcode_compiler_set_data_slot_count(opcode_compiler_t* c, unsigned int size)
+{
+  if (c->compilationStarted || c->compilationDone)
+    {
+      return;
+    }
+  c->dataSlotCount = size;
+}
+
+unsigned int opcode_compiler_get_data_slot_count(opcode_compiler_t* c)
+{
+  return c->dataSlotCount;
 }

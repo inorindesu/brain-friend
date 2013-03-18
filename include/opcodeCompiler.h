@@ -36,5 +36,7 @@ char* opcode_compiler_get_error_new(opcode_compiler_t* c);
 void opcode_compiler_set_optimization(opcode_compiler_t* c, bool optimize);
 bool opcode_compiler_get_optimization(opcode_compiler_t* c);
 bool opcode_compiler_get_insert_state_dumper(opcode_compiler_t* c);
+void opcode_compiler_set_data_slot_count(opcode_compiler_t* c, unsigned int size);
+unsigned int opcode_compiler_get_data_slot_count(opcode_compiler_t* c);
 
 #endif
