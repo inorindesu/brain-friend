@@ -215,24 +215,8 @@ int main(int argc, char** argv)
                 }
               instructionBuffer->currIndex += 1;
               break;
-            case SUB:
-              if (state->dataIdx < 0 || state->dataIdx >= state->dataSize)
-                {
-                  fprintf(stderr, "[INTERPRETER] ERROR: trying to write to illegal data position %d\n", state->dataIdx);
-                  return -1;
-                }
-              else
-                {
-                  state->data[state->dataIdx] -= opcode.param;
-                }
-              instructionBuffer->currIndex += 1;
-              break;
             case NEXT:
               state->dataIdx += opcode.param;
-              instructionBuffer->currIndex += 1;
-              break;
-            case PREV:
-              state->dataIdx -= opcode.param;
               instructionBuffer->currIndex += 1;
               break;
             case IN:

@@ -79,6 +79,8 @@ void opcode_compiler_reset(opcode_compiler_t* c)
   c->insertStateDumper = false;
   c->compilationStarted = false;
   c->errorMsg = NULL;
+  c->lastInst = NOP;
+  c->param = 0;
 }
 
 void opcode_compiler_destroy(opcode_compiler_t* c)
@@ -116,6 +118,8 @@ void opcode_compiler_feed_code(opcode_compiler_t* c, const char* code, unsigned 
       opcode_list_t* ol = opcode_list_new();
       opcode_list_add(ol, INIT, c->dataSlotCount);
       stack_push(c->loop, ol);
+      c->lastInst = NOP;
+      c->param = 0;
     }
   
   for(int i = 0; i < size; i++)

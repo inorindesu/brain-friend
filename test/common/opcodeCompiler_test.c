@@ -29,7 +29,7 @@ void OC_life()
   fprintf(stderr, "done!\n");
 }
 
-int dataSize = 8;
+int dataSize = 9;
 char* datasets[] = {
   "+",
   "-",
@@ -38,7 +38,8 @@ char* datasets[] = {
   "-[-+><]-",
   "[-[+]]",
   "+++++",
-  "[+++]-"
+  "[+++]-",
+  "+++ +++"
 };
 
 char* results[] = {
@@ -49,7 +50,8 @@ char* results[] = {
   "INIT 32767\nADD -1\nBZ 6\nADD -1\nADD 1\nNEXT 1\nNEXT -1\nB -5\nADD -1\n",
   "INIT 32767\nBZ 6\nADD -1\nBZ 3\nADD 1\nB -2\nB -5\n",
   "INIT 32767\nADD 1\nADD 1\nADD 1\nADD 1\nADD 1\n",
-  "INIT 32767\nBZ 5\nADD 1\nADD 1\nADD 1\nB -4\nADD -1\n"
+  "INIT 32767\nBZ 5\nADD 1\nADD 1\nADD 1\nB -4\nADD -1\n",
+  "INIT 32767\nADD 1\nADD 1\nADD 1\nADD 1\nADD 1\nADD 1\n"
 };
 
 char* results_opt[] = {
@@ -60,7 +62,8 @@ char* results_opt[] = {
   "INIT 32767\nADD -1\nBZ 2\nB -1\nADD -1\n",
   "INIT 32767\nBZ 6\nADD -1\nBZ 3\nADD 1\nB -2\nB -5\n",
   "INIT 32767\nADD 5\n",
-  "INIT 32767\nBZ 3\nADD 3\nB -2\nADD -1\n"
+  "INIT 32767\nBZ 3\nADD 3\nB -2\nADD -1\n",
+  "INIT 32767\nADD 6\n"
 };
 
 char* results_dump[] = {
@@ -71,7 +74,8 @@ char* results_dump[] = {
   "INIT 32767\nDUMPSTAT\nADD -1\nDUMPSTAT\nBZ 11\nDUMPSTAT\nADD -1\nDUMPSTAT\nADD 1\nDUMPSTAT\nNEXT 1\nDUMPSTAT\nNEXT -1\nDUMPSTAT\nB -10\nDUMPSTAT\nADD -1\nDUMPSTAT\n",
   "INIT 32767\nDUMPSTAT\nBZ 11\nDUMPSTAT\nADD -1\nDUMPSTAT\nBZ 5\nDUMPSTAT\nADD 1\nDUMPSTAT\nB -4\nDUMPSTAT\nB -10\nDUMPSTAT\n",
   "INIT 32767\nDUMPSTAT\nADD 1\nDUMPSTAT\nADD 1\nDUMPSTAT\nADD 1\nDUMPSTAT\nADD 1\nDUMPSTAT\nADD 1\nDUMPSTAT\n",
-  "INIT 32767\nDUMPSTAT\nBZ 9\nDUMPSTAT\nADD 1\nDUMPSTAT\nADD 1\nDUMPSTAT\nADD 1\nDUMPSTAT\nB -8\nDUMPSTAT\nADD -1\nDUMPSTAT\n"
+  "INIT 32767\nDUMPSTAT\nBZ 9\nDUMPSTAT\nADD 1\nDUMPSTAT\nADD 1\nDUMPSTAT\nADD 1\nDUMPSTAT\nB -8\nDUMPSTAT\nADD -1\nDUMPSTAT\n",
+  "INIT 32767\nDUMPSTAT\nADD 1\nDUMPSTAT\nADD 1\nDUMPSTAT\nADD 1\nDUMPSTAT\nADD 1\nDUMPSTAT\nADD 1\nDUMPSTAT\nADD 1\nDUMPSTAT\n"
 };
 
 int catBufSize = 8192;
