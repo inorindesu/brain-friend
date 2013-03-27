@@ -43,35 +43,35 @@ char* datasets[] = {
 
 char* results[] = {
   "INIT 32767\nADD 1\n",
-  "INIT 32767\nSUB 1\n",
-  "INIT 32767\nADD 1\nSUB 1\nNEXT 1\nPREV 1\nIN\nOUT\n",
+  "INIT 32767\nADD -1\n",
+  "INIT 32767\nADD 1\nADD -1\nNEXT 1\nNEXT -1\nIN\nOUT\n",
   "INIT 32767\nADD 1\nBZ 2\nB -1\nADD 1\n",
-  "INIT 32767\nSUB 1\nBZ 6\nSUB 1\nADD 1\nNEXT 1\nPREV 1\nB -5\nSUB 1\n",
-  "INIT 32767\nBZ 6\nSUB 1\nBZ 3\nADD 1\nB -2\nB -5\n",
+  "INIT 32767\nADD -1\nBZ 6\nADD -1\nADD 1\nNEXT 1\nNEXT -1\nB -5\nADD -1\n",
+  "INIT 32767\nBZ 6\nADD -1\nBZ 3\nADD 1\nB -2\nB -5\n",
   "INIT 32767\nADD 1\nADD 1\nADD 1\nADD 1\nADD 1\n",
-  "INIT 32767\nBZ 5\nADD 1\nADD 1\nADD 1\nB -4\nSUB 1\n"
+  "INIT 32767\nBZ 5\nADD 1\nADD 1\nADD 1\nB -4\nADD -1\n"
 };
 
 char* results_opt[] = {
   "INIT 32767\nADD 1\n",
-  "INIT 32767\nSUB 1\n",
-  "INIT 32767\nADD 1\nSUB 1\nNEXT 1\nPREV 1\nIN\nOUT\n",
+  "INIT 32767\nADD -1\n",
+  "INIT 32767\nIN\nOUT\n",
   "INIT 32767\nADD 1\nBZ 2\nB -1\nADD 1\n",
-  "INIT 32767\nSUB 1\nBZ 6\nSUB 1\nADD 1\nNEXT 1\nPREV 1\nB -5\nSUB 1\n",
-  "INIT 32767\nBZ 6\nSUB 1\nBZ 3\nADD 1\nB -2\nB -5\n",
+  "INIT 32767\nADD -1\nBZ 2\nB -1\nADD -1\n",
+  "INIT 32767\nBZ 6\nADD -1\nBZ 3\nADD 1\nB -2\nB -5\n",
   "INIT 32767\nADD 5\n",
-  "INIT 32767\nBZ 3\nADD 3\nB -2\nSUB 1\n"
+  "INIT 32767\nBZ 3\nADD 3\nB -2\nADD -1\n"
 };
 
 char* results_dump[] = {
   "INIT 32767\nDUMPSTAT\nADD 1\nDUMPSTAT\n",
-  "INIT 32767\nDUMPSTAT\nSUB 1\nDUMPSTAT\n",
-  "INIT 32767\nDUMPSTAT\nADD 1\nDUMPSTAT\nSUB 1\nDUMPSTAT\nNEXT 1\nDUMPSTAT\nPREV 1\nDUMPSTAT\nIN\nDUMPSTAT\nOUT\nDUMPSTAT\n",
+  "INIT 32767\nDUMPSTAT\nADD -1\nDUMPSTAT\n",
+  "INIT 32767\nDUMPSTAT\nADD 1\nDUMPSTAT\nADD -1\nDUMPSTAT\nNEXT 1\nDUMPSTAT\nNEXT -1\nDUMPSTAT\nIN\nDUMPSTAT\nOUT\nDUMPSTAT\n",
   "INIT 32767\nDUMPSTAT\nADD 1\nDUMPSTAT\nBZ 3\nDUMPSTAT\nB -2\nDUMPSTAT\nADD 1\nDUMPSTAT\n",
-  "INIT 32767\nDUMPSTAT\nSUB 1\nDUMPSTAT\nBZ 11\nDUMPSTAT\nSUB 1\nDUMPSTAT\nADD 1\nDUMPSTAT\nNEXT 1\nDUMPSTAT\nPREV 1\nDUMPSTAT\nB -10\nDUMPSTAT\nSUB 1\nDUMPSTAT\n",
-  "INIT 32767\nDUMPSTAT\nBZ 11\nDUMPSTAT\nSUB 1\nDUMPSTAT\nBZ 5\nDUMPSTAT\nADD 1\nDUMPSTAT\nB -4\nDUMPSTAT\nB -10\nDUMPSTAT\n",
+  "INIT 32767\nDUMPSTAT\nADD -1\nDUMPSTAT\nBZ 11\nDUMPSTAT\nADD -1\nDUMPSTAT\nADD 1\nDUMPSTAT\nNEXT 1\nDUMPSTAT\nNEXT -1\nDUMPSTAT\nB -10\nDUMPSTAT\nADD -1\nDUMPSTAT\n",
+  "INIT 32767\nDUMPSTAT\nBZ 11\nDUMPSTAT\nADD -1\nDUMPSTAT\nBZ 5\nDUMPSTAT\nADD 1\nDUMPSTAT\nB -4\nDUMPSTAT\nB -10\nDUMPSTAT\n",
   "INIT 32767\nDUMPSTAT\nADD 1\nDUMPSTAT\nADD 1\nDUMPSTAT\nADD 1\nDUMPSTAT\nADD 1\nDUMPSTAT\nADD 1\nDUMPSTAT\n",
-  "INIT 32767\nDUMPSTAT\nBZ 9\nDUMPSTAT\nADD 1\nDUMPSTAT\nADD 1\nDUMPSTAT\nADD 1\nDUMPSTAT\nB -8\nDUMPSTAT\nSUB 1\nDUMPSTAT\n"
+  "INIT 32767\nDUMPSTAT\nBZ 9\nDUMPSTAT\nADD 1\nDUMPSTAT\nADD 1\nDUMPSTAT\nADD 1\nDUMPSTAT\nB -8\nDUMPSTAT\nADD -1\nDUMPSTAT\n"
 };
 
 int catBufSize = 8192;
@@ -88,16 +88,8 @@ static void op_to_str(inst_t instruction, int param, void* buf)
       snprintf(fmtBuf, 64, "ADD %d\n", param);
       strncat(buf, fmtBuf, catBufSize);
       break;
-    case SUB:
-      snprintf(fmtBuf, 64, "SUB %d\n", param);
-      strncat(buf, fmtBuf, catBufSize);
-      break;
     case NEXT:
       snprintf(fmtBuf, 64, "NEXT %d\n", param);
-      strncat(buf, fmtBuf, catBufSize);
-      break;
-    case PREV:
-      snprintf(fmtBuf, 64, "PREV %d\n", param);
       strncat(buf, fmtBuf, catBufSize);
       break;
     case BZ:

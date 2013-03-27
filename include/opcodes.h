@@ -25,9 +25,7 @@ typedef enum inst_t
   {
     NOP,
     ADD,
-    SUB,
     NEXT,
-    PREV,
     BZ,
     B,
     IN,

@@ -139,7 +139,7 @@ void opcode_compiler_feed_code(opcode_compiler_t* c, const char* code, unsigned 
             case '[':
               if (c->optimize && c->insertStateDumper == false)
                 {
-                  if (c->lastInst != NOP)
+                  if (c->lastInst != NOP && c->param != 0)
                     {
                       opcode_list_add(stack_peek(c->loop), c->lastInst, c->param);
                     }
@@ -152,7 +152,7 @@ void opcode_compiler_feed_code(opcode_compiler_t* c, const char* code, unsigned 
               olEnd = stack_pop(c->loop);
               if (c->optimize && c->insertStateDumper == false)
                 {
-                  if(c->lastInst != NOP)
+                  if(c->lastInst != NOP && c->param != 0)
                     {
                       opcode_list_add(olEnd, c->lastInst, c->param);
                     }
@@ -199,7 +199,7 @@ void opcode_compiler_feed_code(opcode_compiler_t* c, const char* code, unsigned 
                     }
                   else
                     {
-                      if (c->lastInst != NOP)
+                      if (c->lastInst != NOP && c->param != 0)
                         {
                           opcode_list_add(stack_peek(c->loop), c->lastInst, c->param);
                         }
@@ -216,22 +216,22 @@ void opcode_compiler_feed_code(opcode_compiler_t* c, const char* code, unsigned 
               //opcode_list_add(stack_peek(c->loop), PREV, 1);
               if(c->optimize == false || c->insertStateDumper)
                 {
-                  opcode_list_add(stack_peek(c->loop), PREV, 1);
+                  opcode_list_add(stack_peek(c->loop), NEXT, -1);
                 }
               else
                 {
-                  if(c->lastInst == PREV)
+                  if(c->lastInst == NEXT)
                     {
-                      c->param += 1;
+                      c->param -= 1;
                     }
                   else
                     {
-                      if (c->lastInst != NOP)
+                      if (c->lastInst != NOP && c->param != 0)
                         {
                           opcode_list_add(stack_peek(c->loop), c->lastInst, c->param);
                         }
-                      c->lastInst = PREV;
-                      c->param = 1;
+                      c->lastInst = NEXT;
+                      c->param = -1;
                     }
                 }
 
@@ -254,7 +254,7 @@ void opcode_compiler_feed_code(opcode_compiler_t* c, const char* code, unsigned 
                     }
                   else
                     {
-                      if (c->lastInst != NOP)
+                      if (c->lastInst != NOP && c->param != 0)
                         {
                           opcode_list_add(stack_peek(c->loop), c->lastInst, c->param);
                         }
@@ -272,22 +272,22 @@ void opcode_compiler_feed_code(opcode_compiler_t* c, const char* code, unsigned 
               //opcode_list_add(stack_peek(c->loop), SUB, 1);
               if(c->optimize == false || c->insertStateDumper)
                 {
-                  opcode_list_add(stack_peek(c->loop), SUB, 1);
+                  opcode_list_add(stack_peek(c->loop), ADD, -1);
                 }
               else
                 {
-                  if(c->lastInst == SUB)
+                  if(c->lastInst == ADD)
                     {
-                      c->param += 1;
+                      c->param -= 1;
                     }
                   else
                     {
-                      if (c->lastInst != NOP)
+                      if (c->lastInst != NOP && c->param != 0)
                         {
                           opcode_list_add(stack_peek(c->loop), c->lastInst, c->param);
                         }
-                      c->lastInst = SUB;
-                      c->param = 1;
+                      c->lastInst = ADD;
+                      c->param = -1;
                     }
                 }
               break;
@@ -298,7 +298,7 @@ void opcode_compiler_feed_code(opcode_compiler_t* c, const char* code, unsigned 
                 }
               if (c->optimize)
                 {
-                  if(c->lastInst != NOP)
+                  if(c->lastInst != NOP && c->param != 0)
                     {
                       opcode_list_add(stack_peek(c->loop), c->lastInst, c->param);
                     }
@@ -314,7 +314,7 @@ void opcode_compiler_feed_code(opcode_compiler_t* c, const char* code, unsigned 
                 }
               if (c->optimize)
                 {
-                  if (c->lastInst != NOP)
+                  if (c->lastInst != NOP && c->param != 0)
                     {
                       opcode_list_add(stack_peek(c->loop), c->lastInst, c->param);
                     }
@@ -335,7 +335,8 @@ void opcode_compiler_done_compilation(opcode_compiler_t* c)
 {
   if (c->optimize)
     {
-      opcode_list_add(stack_peek(c->loop), c->lastInst, c->param);
+      if (c->param != 0 && c->lastInst != NOP)
+        opcode_list_add(stack_peek(c->loop), c->lastInst, c->param);
     }
   
   if (c->insertStateDumper)
