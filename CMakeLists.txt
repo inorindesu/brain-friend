@@ -56,5 +56,5 @@ list(APPEND CMAKE_C_FLAGS ${C99_FLAG})
 
 add_executable(bfi ${COMMON_SRC} ${INTER_SRC})
 add_executable(bfc ${COMMON_SRC} ${COMPILER_SRC})
-target_link_libraries(bfc lua)
+target_link_libraries(bfc ${LUA_LIB} m)
 add_executable(test_common ${COMMON_SRC} ${COMMON_TEST})
