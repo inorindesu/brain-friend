@@ -25,6 +25,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 char FILE_KEY[] = "BF_LUA_OUTPUT_FP";
 
@@ -126,17 +127,82 @@ lua_State* lua_vm_new()
 
 void print_help(char* appName)
 {
-  printf("Usage: %s -m compiler.lua\n\n", appName);
+  printf("Usage: %s [-d|-o] compiler.lua\n\n", appName);
   printf("  Input is received from stdin\n");
   printf("  Output is written to stdout\n");
-  printf("  Use -m switch to assign compiler lua script file\n");
+  printf("  Compiler lua script file should be assigned.\n");
+  printf("  -d :     Emit dumpstat opcode.\n");
+  printf("  -o :     Enabling optimization.\n");
+  printf("  (Only one of -d and -o can be activated)\n");
 }
 
 int main(int argc, char** argv)
 {
-  if (argc < 3)
+  /* basic check of parameters*/
+  if (argc < 2)
     {
       print_help(argv[0]);
+      return 0;
     }
+  
+  /*
+   * scan parameters
+   * compare for -d and -o, 
+   * first of the items left will be used as main script
+   */
+  bool debugFlag = false;
+  bool optimizeFlag = false;
+  char* scriptName = NULL;
+  for(int i = 1; i < argc; i++)
+    {
+      if (argv[i][0] == '\0')
+        {
+          continue;
+        }
+      else if (strcmp(argv[i], "-d") == 0)
+        {
+          debugFlag = true;
+        }
+      else if (strcmp(argv[i], "-o") == 0)
+        {
+          optimizeFlag = true;
+        }
+      else if(argv[i][0] != '\0' && argv[i][0] == '-')
+        {
+          fprintf(stderr, "INFO: omit unknown switch %s\n", argv[i]);
+        }
+      else if (scriptName == NULL)
+        {
+          FILE* fp = fopen(argv[i], "r");
+          if (fp == NULL)
+            {
+              fprintf(stderr, "INFO: omit nonexistent file %s\n", argv[i]);
+            }
+          else
+            {
+              fclose(fp);
+              scriptName = argv[i];
+            }
+        }
+      else
+        {
+          fprintf(stderr, "INFO: omit file %s\n", argv[i]);
+        }
+    }
+  
+  if (debugFlag && optimizeFlag)
+    {
+      fprintf(stderr, "ERROR: -d and -o cannot be specified at the same time.\n");
+      return -1;
+    }
+  if (scriptName == NULL)
+    {
+      fprintf(stderr, "ERROR: no compilation script specified.\n");
+      return -1;
+    }
+
+  /*
+   * Load script
+   */
   return 0;
 }
