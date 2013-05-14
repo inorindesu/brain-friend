@@ -208,5 +208,41 @@ int main(int argc, char** argv)
   /*
    * Load script
    */
+  lua_State* s = lua_vm_new();
+  if(luaL_dofile(s, scriptName))
+    {
+      const char* msg = lua_tostring(s, lua_gettop(s));
+      fprintf(stderr, "ERROR: message is:\n%s\n", msg);
+      lua_close(s);
+      return -1;
+    }
+  
+  /*
+   * check for 3 functions
+   */
+  lua_getglobal(s, "receiveCode");
+  if (lua_isfunction(s, lua_gettop(s)) == 0)
+    {
+      fprintf(stderr, "ERROR: receiveCode is not provided in script %s\n", scriptName);
+      lua_close(s);
+      return -1;
+    }
+
+  bool hasInit = false;
+  bool hasAtEnd = false;
+  lua_getglobal(s, "init");
+  if (lua_isfunction(s, lua_gettop(s)))
+    {
+      hasInit = true;
+    }
+  lua_pop(s, 1);
+  
+  lua_getglobal(s, "atEnd");
+  if (lua_isfunction(s, lua_gettop(s)))
+    {
+      hasAtEnd = true;
+    }
+  lua_pop(s, 1);
+
   return 0;
 }
