@@ -121,6 +121,10 @@ lua_State* lua_vm_new()
   lua_settable(stat, tableIdx);
   
   lua_setglobal(stat, "Opcodes");
+  
+  lua_pushcfunction(stat, luaopen_table);
+  lua_pushliteral(stat, LUA_TABLIBNAME);
+  lua_call(stat, 1, 0);
 
   return stat;
 }
