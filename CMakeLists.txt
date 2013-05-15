@@ -43,6 +43,10 @@ set(COMMON_TEST
 set(INCLUDE_DIR
   include)
 
+set(LUA_SCRIPTS
+  dump.lua
+  )
+
 if (DEFINED LUA_OVERRIDE)
   set(INCLUDE_DIR ${INCLUDE_DIR} ${LUA_OVERRIDE}/include)
   find_library(LUA_LIB lua PATHS ${LUA_OVERRIDE}/lib64 ${LUA_OVERRIDE}/lib NO_DEFAULT_PATH)
@@ -54,6 +58,22 @@ message(STATUS ${LUA_LIB})
 include_directories(${INCLUDE_DIR})
 list(APPEND CMAKE_C_FLAGS ${C99_FLAG})
 
+# scripts
+file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/share/scripts)
+set(LUA_COPY)
+foreach(LUA_SCRIPT ${LUA_SCRIPTS})
+  add_custom_command(
+    OUTPUT ${CMAKE_BINARY_DIR}/share/scripts/${LUA_SCRIPT}
+    COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_SOURCE_DIR}/scripts/${LUA_SCRIPT}" "${CMAKE_BINARY_DIR}/share/scripts/${LUA_SCRIPT}"
+    DEPENDS ${CMAKE_SOURCE_DIR}/scripts/${LUA_SCRIPT}
+    )
+  list(APPEND LUA_COPY ${CMAKE_BINARY_DIR}/share/scripts/${LUA_SCRIPT})
+endforeach(LUA_SCRIPT)
+add_custom_target(lua_copier ALL DEPENDS ${LUA_COPY})
+
+
+file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 add_executable(bfi ${COMMON_SRC} ${INTER_SRC})
 add_executable(bfc ${COMMON_SRC} ${COMPILER_SRC})
 target_link_libraries(bfc ${LUA_LIB} m)

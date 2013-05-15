@@ -27,7 +27,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-char FILE_KEY[] = "BF_LUA_OUTPUT_FP";
 const int BUF_SIZE = 1024;
 
 /*
@@ -38,14 +37,9 @@ int bflua_write(lua_State* state)
 {
   size_t size = 0;
   const char* str = lua_tolstring(state, 1, &size);
-  lua_pop(state, 1);
   
-  lua_pushstring(state, FILE_KEY);
-  lua_gettable(state, LUA_REGISTRYINDEX);
-  FILE* targetFp = lua_touserdata(state, -1);
+  fwrite(str, 1, size, stdout);
   lua_pop(state, 1);
-  
-  fwrite(str, 1, size, targetFp);
   
   return 0;
 }
@@ -58,15 +52,11 @@ int bflua_writeLine(lua_State* state)
 {
   size_t size = 0;
   const char* str = lua_tolstring(state, 1, &size);
-  lua_pop(state, 1);
   
-  lua_pushstring(state, FILE_KEY);
-  lua_gettable(state, LUA_REGISTRYINDEX);
-  FILE* targetFp = lua_touserdata(state, -1);
+  fwrite(str, 1, size, stdout);
+  fputc('\n', stdout);
+
   lua_pop(state, 1);
-  
-  fwrite(str, 1, size, targetFp);
-  fputc('\n', targetFp);
   
   return 0;
 }
