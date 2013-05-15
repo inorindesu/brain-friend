@@ -28,6 +28,7 @@
 #include <string.h>
 
 char FILE_KEY[] = "BF_LUA_OUTPUT_FP";
+const int BUF_SIZE = 1024;
 
 /*
  * bflua_write:
@@ -140,6 +141,20 @@ void print_help(char* appName)
   printf("  (Only one of -d and -o can be activated)\n");
 }
 
+void opcode_sender(inst_t instruction, int param, void* userData)
+{
+  lua_State* s = (lua_State*)userData;
+  lua_getglobal(s, "receiveCode");
+  lua_pushinteger(s, instruction);
+  lua_pushinteger(s, param);
+  if (lua_pcall(s, 2, 0, 0) != 0)
+    {
+      fprintf(stderr, "ERROR: while transferring opcodes.\n");
+      fprintf(stderr, "%s\n", lua_tostring(s, lua_gettop(s)));
+      lua_pop(s, 1);
+    }
+}
+
 int main(int argc, char** argv)
 {
   /* basic check of parameters*/
@@ -219,6 +234,8 @@ int main(int argc, char** argv)
   
   /*
    * check for 3 functions
+   * receiveCode should exist in lua script
+   * init and atEnd are optional
    */
   lua_getglobal(s, "receiveCode");
   if (lua_isfunction(s, lua_gettop(s)) == 0)
@@ -227,6 +244,7 @@ int main(int argc, char** argv)
       lua_close(s);
       return -1;
     }
+  lua_pop(s, 1);
 
   bool hasInit = false;
   bool hasAtEnd = false;
@@ -243,6 +261,68 @@ int main(int argc, char** argv)
       hasAtEnd = true;
     }
   lua_pop(s, 1);
+  
+  /*
+   * Compile codes from stdin
+   */
+  opcode_compiler_t* compiler = opcode_compiler_new();
+  opcode_compiler_set_insert_state_dumper(compiler, debugFlag);
+  opcode_compiler_set_optimization(compiler, optimizeFlag);
+  size_t read = 0;
+  char* buffer = malloc(BUF_SIZE);
+  do
+    {
+      read = fread(buffer, 1, BUF_SIZE, stdin);
+      opcode_compiler_feed_code(compiler, buffer, read);
+      char* err = opcode_compiler_get_error_new(compiler);
+      if (err != NULL)
+        {
+          int lineNo = opcode_compiler_get_current_line_number(compiler);
+          int colNo = opcode_compiler_get_current_column_number(compiler);
+          fprintf(stderr, "ERROR: at line %d, column %d:\n", lineNo, colNo);
+          fprintf(stderr, "%s\n", err);
+          return -1;
+        }
+    }
+  while (read > 0);
+  free(buffer);
+  opcode_compiler_done_compilation(compiler);
 
+  /*
+   * Pass compiled opcodes to lua engine
+   */
+  if (hasInit == true)
+    {
+      lua_getglobal(s, "init");
+      if (lua_pcall(s, 0, 0, 0) != 0)
+        {
+          fprintf(stderr, "ERROR: when running init.");
+          fprintf(stderr, "%s\n", lua_tostring(s, lua_gettop(s)));
+          lua_pop(s, 1);
+          return -1;
+        }
+    }
+
+  opcode_list_t* opcodes = opcode_compiler_result_new(compiler);
+  opcode_compiler_destroy(compiler);
+  opcode_list_traverse(opcodes, opcode_sender, s);
+  opcode_list_destroy(opcodes);
+  
+  if (hasAtEnd == true)
+    {
+      lua_getglobal(s, "atEnd");
+      if (lua_pcall(s, 0, 0, 0) != 0)
+        {
+          fprintf(stderr, "ERROR: when running init.");
+          fprintf(stderr, "%s\n", lua_tostring(s, lua_gettop(s)));
+          lua_pop(s, 1);
+          return -1;
+        }
+    }
+
+  /*
+   * cleanup
+   */
+  lua_close(s);
   return 0;
 }
