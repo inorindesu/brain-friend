@@ -45,6 +45,8 @@ set(INCLUDE_DIR
 
 set(LUA_SCRIPTS
   dump.lua
+  pseudoOpcode.lua
+  x86_64_GNU.lua
   )
 
 if (DEFINED LUA_OVERRIDE)
