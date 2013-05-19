@@ -274,7 +274,7 @@ int main(int argc, char** argv)
           return -1;
         }
     }
-  while (read > 0);
+  while (read == BUF_SIZE);
   free(buffer);
   opcode_compiler_done_compilation(compiler);
   char* err = opcode_compiler_get_error_new(compiler);
