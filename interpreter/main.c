@@ -123,12 +123,19 @@ int main(int argc, char** argv)
           opcode_compiler_set_insert_state_dumper(compiler, true);
         }
       /* code collector */
+      bool eofBreak = false;
       while(true)
         {
           bool hasNewLine = false;
           for(len = 1; len <= LINE_BUFFER_SIZE; len++)
             {
-              char ch = getchar();
+              int chi = getchar();
+              if (chi == EOF)
+                {
+                  eofBreak = true;
+                  break;
+                }
+              char ch = chi;
               buffer[len - 1] = ch;
               /* bracket checker */
               if (ch == '[')
@@ -148,6 +155,14 @@ int main(int argc, char** argv)
                 }
             }
           opcode_compiler_feed_code(compiler, buffer, len);
+          char* err;
+          err = opcode_compiler_get_error_new(compiler);
+          if (err != NULL)
+            {
+              fprintf(stderr, "ERROR: %s\n", err);
+              free(err);
+              return -1;
+            }
           /*
            * Only when the loop is closed and a newline character is
            * found, interpreter can then compile the codes into
@@ -157,8 +172,23 @@ int main(int argc, char** argv)
             {
               break;
             }
+          
+          /* To process what is left in the buffer when EOF is reached*/
+          if (eofBreak)
+            {
+              break;
+            }
         }
+      
+      char* err;
       opcode_compiler_done_compilation(compiler);
+      err = opcode_compiler_get_error_new(compiler);
+      if (err != NULL)
+        {
+          fprintf(stderr, "ERROR: %s\n", err);
+          free(err);
+          return -1;
+        }
       opcode_list_t* result = opcode_compiler_result_new(compiler);
 
       /* copy compilation result */
@@ -304,6 +334,11 @@ int main(int argc, char** argv)
       opcode_compiler_reset(compiler);
       free(instructionBuffer->opcodes);
       free(instructionBuffer);
+
+      if (eofBreak)
+        {
+          break;
+        }
     }
   free(state->data);
   free(state);
