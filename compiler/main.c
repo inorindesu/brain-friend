@@ -277,6 +277,12 @@ int main(int argc, char** argv)
   while (read > 0);
   free(buffer);
   opcode_compiler_done_compilation(compiler);
+  char* err = opcode_compiler_get_error_new(compiler);
+  if (err != NULL)
+    {
+      fprintf(stderr, "ERROR: when generating pseucodes:\n %s\n", err);
+      return -1;
+    }
 
   /*
    * Pass compiled opcodes to lua engine
