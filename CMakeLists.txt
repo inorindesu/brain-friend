@@ -8,6 +8,12 @@ project(brainf)
 set(C99_FLAG
   --std=c99)
 
+# uncomment BUILD_DOC to disable documentation
+# build
+set(BUILD_DOC yes)
+set(DOC_ROOT_DIRS
+  ./doc/zh_tw/)
+
 # ! please remember to change /unset this variable
 # ! if default LUA is good for your need.
 #
@@ -73,6 +79,24 @@ foreach(LUA_SCRIPT ${LUA_SCRIPTS})
 endforeach(LUA_SCRIPT)
 add_custom_target(lua_copier ALL DEPENDS ${LUA_COPY})
 
+# documentation
+file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/share/doc)
+if (DEFINED BUILD_DOC)
+  set(DOC_BUILD)
+  foreach(DOC_ROOT ${DOC_ROOT_DIRS})
+    get_filename_component(FNAME ${DOC_ROOT} NAME)
+    get_filename_component(BOOK_SRC ${DOC_ROOT}/book.xml ABSOLUTE)
+    get_filename_component(DB_STYLE ${DOC_ROOT}/style.xsl ABSOLUTE)
+    file(GLOB_RECURSE DEPENDS_XML ${DOC_ROOT}/*.xml)
+    add_custom_command(
+      OUTPUT ${CMAKE_BINARY_DIR}/share/doc/${FNAME}/index.htm
+      COMMAND xsltproc --xinclude --stringparam base.dir "${CMAKE_BINARY_DIR}/share/doc/${FNAME}" ${DB_STYLE} ${BOOK_SRC}
+      DEPENDS ${DEPENDS_XML}
+      )
+    list(APPEND DOC_BUILD ${CMAKE_BINARY_DIR}/share/doc/${FNAME}/index.htm)
+  endforeach(DOC_ROOT)
+  add_custom_target(doc_builder ALL DEPENDS ${DOC_BUILD})
+endif (DEFINED BUILD_DOC)
 
 file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)

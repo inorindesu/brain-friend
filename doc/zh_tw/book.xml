@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<book xmlns="http://docbook.org/ns/docbook"
+      version="5.0"
+      xmlns:xi="http://w3.org/2001/XInclude"
+      lang="zh_tw">
+  <title>Brain-Friend: Brainf*k 程式語言的處理系統</title>
+  <info>
+    <author>
+      <personname>
+        <firstname>祈</firstname>
+        <surname>佐倉</surname>
+      </personname>
+    </author>
+  </info>
+  
+  <index/>
+</book>

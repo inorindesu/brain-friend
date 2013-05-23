@@ -1,0 +1,5 @@
+<?xml version='1.0'?>
+<l:i18n xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0">
+<l:l10n language="zh_tw" href="zh_tw.xml"/>
+<l:l10n language="en" href="en.xml"/>
+</l:i18n>
