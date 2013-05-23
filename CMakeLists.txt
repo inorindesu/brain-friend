@@ -84,16 +84,18 @@ file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/share/doc)
 if (DEFINED BUILD_DOC)
   set(DOC_BUILD)
   foreach(DOC_ROOT ${DOC_ROOT_DIRS})
-    get_filename_component(FNAME ${DOC_ROOT} NAME)
+    get_filename_component(FF ${DOC_ROOT} ABSOLUTE) # remove trailing '/'
+    get_filename_component(FNAME ${FF} NAME)
+    #message(STATUS ${FF})
     get_filename_component(BOOK_SRC ${DOC_ROOT}/book.xml ABSOLUTE)
     get_filename_component(DB_STYLE ${DOC_ROOT}/style.xsl ABSOLUTE)
     file(GLOB_RECURSE DEPENDS_XML ${DOC_ROOT}/*.xml)
     add_custom_command(
-      OUTPUT ${CMAKE_BINARY_DIR}/share/doc/${FNAME}/index.htm
+      OUTPUT ${CMAKE_BINARY_DIR}/share/doc/${FNAME}/index.html
       COMMAND xsltproc --xinclude --stringparam base.dir "${CMAKE_BINARY_DIR}/share/doc/${FNAME}" ${DB_STYLE} ${BOOK_SRC}
       DEPENDS ${DEPENDS_XML}
       )
-    list(APPEND DOC_BUILD ${CMAKE_BINARY_DIR}/share/doc/${FNAME}/index.htm)
+    list(APPEND DOC_BUILD ${CMAKE_BINARY_DIR}/share/doc/${FNAME}/index.html)
   endforeach(DOC_ROOT)
   add_custom_target(doc_builder ALL DEPENDS ${DOC_BUILD})
 endif (DEFINED BUILD_DOC)
