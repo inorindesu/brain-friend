@@ -12,6 +12,10 @@
   <!-- and family names in locales where it may be ambiguous -->
   <xsl:apply-templates select="$node//surname[1]"/>
 
+  <xsl:if test="$node//surname and $node//firstname">
+    <xsl:text> </xsl:text>
+  </xsl:if>
+
   <xsl:apply-templates select="$node//firstname[1]"/>
 </xsl:template>
 </xsl:stylesheet>
