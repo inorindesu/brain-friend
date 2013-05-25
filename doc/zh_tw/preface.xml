@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<preface xmlns="http://docbook.org/ns/docbook"
+         version="5.0">
+  <title>
+    前言
+  </title>
+  <para>
+    <application>Brain-Friend</application>是一組可以處理Brainfuck
+程式語言（以下以Brainf*k或bf稱之）的程式，包括了直譯器以及具有彈性的編譯器。
+你可以用直譯器直接執行bf程式，也可以利用編譯器把bf原始檔轉換成許多種不同格式的
+程式碼，例如說x86組合語言。
+  </para>
+  <para>
+    這組程式的誕生是由於作者某天太無聊閒逛逛到
+<ulink url="https://zh.wikipedia.org/wiki/Brainfuck">Wikipedia的bf頁面</ulink>
+。看了它的介紹，覺得它簡單且有趣：只有八個指令，卻似乎可以做很多事情。也因為它的簡潔
+，腦袋裡就冒出了「做個直譯器/編譯器」的想法。
+  </para>
+  <para>
+    直譯器完成後，我開始著手編譯器的設計。可能是恰好遇上了lua，所以靈光一閃，試著利用
+lua來讓編譯器可以把bf程式碼編譯到不同的平台上面去。<ulink url="http://zh.wikipedia.org/zh-tw/Lua">Lua</ulink>
+之所以可以提供彈性，是由於它是一個相當輕巧的劇本語言(scripting language)，可以很方便的從宿主程式
+提供恰當的環境來做功能擴充。我曾經考慮過語法上較為熟悉的Python，然而它，相對於lua來說，實在是太過龐大，
+難以把它安進我的編譯器中。
+  </para>
+  <para>
+    這個看似簡單其實卻充滿內涵的計畫陪我度過了一段不短且快樂的時光。因此，謹將此書獻給你，
+親愛的Brain-friend。
+  </para>
+  <para>
+    喔對了，對於Brain-friend或是這本書，有任何問題的話，歡迎利用電子郵件
+<email>inorindesu@gmail.com</email>聯絡我喔！我會很熱心的替你解答喔:)
+  </para>
+</preface>

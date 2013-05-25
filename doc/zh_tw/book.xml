@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <book xmlns="http://docbook.org/ns/docbook"
       version="5.0"
-      xmlns:xi="http://w3.org/2001/XInclude"
+      xmlns:xi="http://www.w3.org/2001/XInclude"
       lang="zh_tw">
   <title>Brain-Friend: Brainf*k 程式語言的處理系統</title>
   <info>
@@ -12,6 +12,7 @@
       </personname>
     </author>
   </info>
-  
+  <xi:include href="preface.xml"/>
+  <xi:include href="userGuide/index.xml"/>
   <index/>
 </book>

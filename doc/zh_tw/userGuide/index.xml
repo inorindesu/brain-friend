@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<part xmlns="http://docbook.org/ns/docbook"
+      version="5.0"
+      xmlns:xi="http://www.w3.org/2001/XInclude">
+  <preface>
+    <para>
+      本書的這一部份專門用來讓你可以快速的上手Brain-friend。首先，
+我會說明如何編譯本軟體，接著我會展示使用Brain-friend中的編譯器，
+<command>bfc</command>以及直譯器<command>bfi</command>的使用。最後，
+我會介紹如何利用lua來擴充<command>bfc</command>的輸出功能。
+    </para>
+  </preface>
+</part>
