@@ -133,6 +133,10 @@ int main(int argc, char** argv)
               if (chi == EOF)
                 {
                   eofBreak = true;
+                  /*
+                    len -= 1, since EOF is not a character.
+                   */
+                  len -= 1;
                   break;
                 }
               char ch = chi;
